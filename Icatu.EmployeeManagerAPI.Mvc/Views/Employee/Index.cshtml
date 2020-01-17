@@ -1,0 +1,73 @@
+﻿@using X.PagedList.Mvc;
+@model X.PagedList.PagedList<Icatu.EmployeeManagerAPI.Mvc.Models.MvcEmployeeModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<p style="margin-top: 20px">
+    <a href="@Url.Action("AddOrEdit", "Employee")" class="btn btn-default">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Department
+            </th>
+            <th>
+                Email
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                <a href="@Url.Action("AddOrEdit", "Employee", new { id = item.EmployeeId })" class="btn btn-default">Edit</a> |
+                <a onclick="Delete(@item.EmployeeId)" class="btn btn-default">Delete</a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div class="row">
+    <div class="col-md-8">
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    </div>
+    <div class="col-md-4">
+        <span class="pull-right">
+            Registers from @Model.FirstItemOnPage to @Model.LastItemOnPage in a total amount of @Model.TotalItemCount
+        </span>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function() {
+            var successMessage = '@TempData["SuccessMessage"]';
+            if (successMessage != '')
+                alertify.success(successMessage);
+        });
+
+        function Delete(id) {
+            alertify.confirm('Icatu Employees', 'Are you sure to delete this item?', function () {
+                window.location.href = '@Url.Action("Delete", "Employee")/' + id;
+            }, null);
+        }
+    </script>
+}
